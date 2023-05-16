@@ -54,3 +54,15 @@ stop-docker:
 docker-clean: stop-docker docker-network-destroy \
 	docker-edgedb-volume-destroy
 
+load-edgedb: docker-edgedb
+	-edgedb project unlink --non-interactive
+	# -edgedb instance destroy -I edgedb_bench --force
+	edgedb -H localhost -P 3000 instance link \
+		--non-interactive --trust-tls-cert --overwrite edgedb_bench
+	edgedb -H localhost -P 3000 project init --link \
+		--non-interactive --no-migrations --server-instance edgedb_bench
+	edgedb query 'CREATE DATABASE temp'
+	edgedb -d temp query 'DROP DATABASE edgedb'
+	edgedb -d temp query 'CREATE DATABASE edgedb'
+	edgedb query 'DROP DATABASE temp'
+	edgedb migrate
