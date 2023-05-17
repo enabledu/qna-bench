@@ -1,0 +1,14 @@
+{
+    "post": [
+        {
+            "content": "one",
+            "upvote": 1,
+            "downvote": 1
+        },
+        {
+            "content": "two",
+            "upvote": 2,
+            "downvote": 2
+        }
+    ]
+}

@@ -56,7 +56,6 @@ docker-clean: stop-docker docker-network-destroy \
 
 load-edgedb: docker-edgedb
 	-edgedb project unlink --non-interactive
-	# -edgedb instance destroy -I edgedb_bench --force
 	edgedb -H localhost -P 3000 instance link \
 		--non-interactive --trust-tls-cert --overwrite edgedb_bench
 	edgedb -H localhost -P 3000 project init --link \
@@ -66,3 +65,4 @@ load-edgedb: docker-edgedb
 	edgedb -d temp query 'CREATE DATABASE edgedb'
 	edgedb query 'DROP DATABASE temp'
 	edgedb migrate
+	$(PP) -m _edgedb.load_data $(DATASET)/edbdataset.json
