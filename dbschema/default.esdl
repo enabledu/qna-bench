@@ -38,7 +38,7 @@ module default {
         multi link comments -> Comment {
             on target delete allow;
         }
-        multi link answer -> Answer {
+        multi link answers -> Answer {
             on target delete allow;
         }
     }

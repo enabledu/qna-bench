@@ -1,4 +1,4 @@
-CREATE MIGRATION m1mjz7hixjx36dhe276ih6gq72ztm5fqs43oqmdzeb7rjxpeg6qmcq
+CREATE MIGRATION m1nb2vtbmjqeigxkgcheyly6z7bi2ik7a5iucfscbjmzczug6uzurq
     ONTO initial
 {
   CREATE SCALAR TYPE default::Age EXTENDING std::int16 {
@@ -45,7 +45,7 @@ CREATE MIGRATION m1mjz7hixjx36dhe276ih6gq72ztm5fqs43oqmdzeb7rjxpeg6qmcq
       };
   };
   CREATE TYPE default::Question EXTENDING default::Post {
-      CREATE MULTI LINK answer -> default::Answer {
+      CREATE MULTI LINK answers -> default::Answer {
           ON TARGET DELETE ALLOW;
       };
       CREATE MULTI LINK comments -> default::Comment {
