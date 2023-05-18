@@ -27,9 +27,6 @@ INSERT_USER = """
             first_name := <str>$fname,
             last_name := <str>$lname,
             username := <str>$username,
-            is_active := <bool>$is_active,
-            is_superuser := <bool>$is_superuser,
-            is_verified := <bool>$is_verified,
             hashed_password := <str>$hashed_password,
         }
     ) {

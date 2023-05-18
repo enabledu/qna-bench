@@ -37,7 +37,16 @@ BENCHMARKS = {
         description=(
             "Get all information about a given answer: content, upvote, downvote, "
             "author, is_accepted and comments."
-        )
+        ),
+    ),
+    "get_comments_on_question": bench(
+        title="GET /comment/:question_id",
+        description="Get all comments on a given question.",
+    ),
+    "insert_user": bench(title="POST /user", description="Insert a new user."),
+    "update_comments_on_answer": bench(
+        title="PATCH /answer/:id",
+        description="Update the comments on a given answer (add a new comment to exisiting comments).",
     ),
 }
 
