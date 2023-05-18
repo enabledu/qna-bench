@@ -1,7 +1,6 @@
 module default {
     type User {
         required property email -> str {
-            constraint exclusive;
             constraint regexp(r"^[A-Za-z0-9\.\+_-]+@[A-Za-z0-9\._-]+\.[a-zA-Z]*$");
         }
 
@@ -19,9 +18,7 @@ module default {
 
         required property first_name -> str;
         required property last_name -> str;
-        required property username -> str {
-            constraint exclusive;
-        }
+        required property username -> str;
         required property age -> Age;
     }
 

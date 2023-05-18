@@ -1,0 +1,46 @@
+{
+  "type": "array",
+  "length": {
+    "type": "number",
+    "constant": 70000,
+    "subtype": "u64"
+  },
+  "content": {
+    "type": "object",
+    "author": {
+      "type": "same_as",
+      "ref": "users.content.id"
+    },
+    "content": {
+      "type": "string",
+      "faker": {
+        "generator": "bs"
+      }
+    },
+    "downvote": {
+      "type": "number",
+      "range": {
+        "low": 0,
+        "high": 1000,
+        "step": 1
+      },
+      "subtype": "u64"
+    },
+    "id": {
+      "type": "number",
+      "subtype": "u64",
+      "id": {
+        "start_at": 0
+      }
+    },
+    "upvote": {
+      "type": "number",
+      "range": {
+        "low": 0,
+        "high": 1000,
+        "step": 1
+      },
+      "subtype": "u64"
+    }
+  }
+}

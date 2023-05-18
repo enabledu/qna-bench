@@ -86,7 +86,7 @@ async def import_data(data: dict):
             upvote := <int16>comment["upvote"],
             downvote := <int16>comment["downvote"],
             content := <str>comment["content"],
-            author := (SELECT User FILTER .username = <str>comment["author"])
+            author := (SELECT User FILTER .username = <str>comment["author"] LIMIT 1)
         }
     );
     """
@@ -124,14 +124,14 @@ async def import_data(data: dict):
             upvote := <int16>answer["upvote"],
             downvote := <int16>answer["downvote"],
             content := <str>answer["content"],
-            author := (SELECT User FILTER .username = <str>answer["author"]),
+            author := (SELECT User FILTER .username = <str>answer["author"] LIMIT 1),
             comments := (
                 FOR X IN {
                     enumerate(array_unpack(<array<str>>answer["comments"]))
                 }
                 UNION (
                     SELECT Comment
-                    FILTER .content = X.1
+                    FILTER .content = X.1 LIMIT 1
                 )
             )
         }
@@ -175,14 +175,14 @@ async def import_data(data: dict):
             content := <str>question["content"],
             tags := <array<str>>question["tags"],
             title := <str>question["title"],
-            author := (SELECT User FILTER .username = <str>question["author"]),
+            author := (SELECT User FILTER .username = <str>question["author"] LIMIT 1),
             comments := (
                 FOR X IN {
                     enumerate(array_unpack(<array<str>>question["comments"]))
                 }
                 UNION (
                     SELECT Comment
-                    FILTER .content = X.1
+                    FILTER .content = X.1 LIMIT 1
                 )
             ),
             answers := (
@@ -191,7 +191,7 @@ async def import_data(data: dict):
                 }
                 UNION (
                     SELECT Answer
-                    FILTER .content = X.1
+                    FILTER .content = X.1 LIMIT 1
                 )
             )
         }

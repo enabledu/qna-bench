@@ -8,10 +8,26 @@ DOCKER ?= docker
 PYTHON ?= python
 PP = PYTHONPATH=$(CURRENT_DIR) $(PYTHON)
 
-DATASET = $(abspath dataset/)
+DATASET = $(abspath dataset/data)
+users = 100000
+comments = 70000
+questions = 40000
+answers = 30000
 
 all:
 	@echo "Pick a target"
+
+new-edgedb-dataset:
+	mkdir -p dataset/qna
+	cat dataset/templates/answers.json \
+		| sed "s/%ANSWERS%/$(answers)/" > dataset/qna/answers.json
+	cat dataset/templates/comments.json \
+		| sed "s/%COMMENTS%/$(comments)/" > dataset/qna/comments.json
+	cat dataset/templates/questions.json \
+		| sed "s/%QUESTIONS%/$(questions)/" > dataset/qna/questions.json
+	cat dataset/templates/users.json \
+		| sed "s/%USERS%/$(users)/" > dataset/qna/users.json
+	synth generate dataset/qna > $(DATASET)/edbdataset.json
 
 docker-network:
 	$(DOCKER) network inspect qna-bench>/dev/null 2>&1 \
