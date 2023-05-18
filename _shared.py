@@ -12,7 +12,7 @@ import types
 import typing
 
 
-from _edgedb import queries_json as edgedb_queries_json
+from _edgedb import queries_sync as edgedb_queries_sync
 
 
 class impl(typing.NamedTuple):
@@ -22,7 +22,7 @@ class impl(typing.NamedTuple):
 
 
 IMPLEMENTATIONS = {
-    "edgedb_py_json": impl("python", "EdgeDB (Python, JSON)", edgedb_queries_json),
+    "edgedb_py_sync": impl("python", "EdgeDB (Python, Sync)", edgedb_queries_sync),
 }
 
 
