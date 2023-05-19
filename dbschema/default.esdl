@@ -41,7 +41,9 @@ module default {
     }
 
     type Answer extending Post {
-        multi link comments -> Comment;
+        multi link comments -> Comment {
+            on target delete allow;
+        }
         property is_accepted -> bool{default := false};
     }
 

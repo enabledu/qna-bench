@@ -1,4 +1,4 @@
-CREATE MIGRATION m12mfiymh4bfx76kzz6wnvsysdtvhvittyg3haepdgh3udfrwfjzwq
+CREATE MIGRATION m1x6eqohnyzndhxvuv4tpkxke5zrocssxcnesymt3bsk35yhkyoc4q
     ONTO initial
 {
   CREATE SCALAR TYPE default::Age EXTENDING std::int16 {
@@ -36,7 +36,9 @@ CREATE MIGRATION m12mfiymh4bfx76kzz6wnvsysdtvhvittyg3haepdgh3udfrwfjzwq
   };
   CREATE TYPE default::Comment EXTENDING default::Post;
   CREATE TYPE default::Answer EXTENDING default::Post {
-      CREATE MULTI LINK comments -> default::Comment;
+      CREATE MULTI LINK comments -> default::Comment {
+          ON TARGET DELETE ALLOW;
+      };
       CREATE PROPERTY is_accepted -> std::bool {
           SET default := false;
       };
