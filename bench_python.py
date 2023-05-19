@@ -280,10 +280,7 @@ def run_sync(ctx, benchname) -> typing.List[Result]:
     queries_mod.close(ctx, idconn)
 
     for queryname in ctx.queries:
-        # Potentially setup the benchmark state
         conn = queries_mod.connect(ctx)
-        queries_mod.setup(ctx, conn, queryname)
-        queries_mod.close(ctx, conn)
 
         res = run_benchmark_sync(ctx, benchname, ids, queryname)
         results.append(res)
@@ -311,15 +308,6 @@ def run_async(ctx, benchname) -> typing.List[Result]:
         finally:
             await queries_mod.close(ctx, conn)
 
-    async def setup():
-        if not hasattr(queries_mod, 'setup'):
-            return
-        conn = await queries_mod.connect(ctx)
-        try:
-            return await queries_mod.setup(ctx, conn, queryname)
-        finally:
-            await queries_mod.close(ctx, conn)
-
     async def cleanup():
         if not hasattr(queries_mod, 'cleanup'):
             return
@@ -333,9 +321,6 @@ def run_async(ctx, benchname) -> typing.List[Result]:
     ids = asyncio.run(fetch_ids())
 
     for queryname in ctx.queries:
-        # Potentially setup the benchmark state
-        asyncio.run(setup())
-
         res = run_benchmark_async(ctx, benchname, ids, queryname)
         results.append(res)
         print_result(ctx, res)

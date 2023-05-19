@@ -88,13 +88,26 @@ def update_comments_on_answer(conn, val):
         author_id=random.choice(val["author_id"]),
         upvote=num,
         downvote=num // 10,
-        content=f"{val['prefix']}_{num}",
+        content=f"{val['prefix']}{num}",
     )
 
 
-def setup(ctx, conn, queryname):
-    ...
-
-
 def cleanup(ctx, conn, queryname):
-    ...
+    if queryname == "insert_user":
+        # Delete the inserted user data
+        conn.query("""
+            DELETE User
+            FILTER .username LIKE <str>$prefix
+        """, prefix=f"{INSERT_PREFIX}%")
+    elif queryname == "update_comments_on_answer":
+        # Delete the inserted comment
+        conn.query("""
+            UPDATE Answer FILTER .comments.content LIKE <str>$prefix
+            SET {
+                comments -= (SELECT Comment FILTER .content LIKE <str>$prefix)
+            }
+        """, prefix=f"{INSERT_PREFIX}%")
+
+        conn.query("""
+            DELETE Comment FILTER .content LIKE <str>$prefix
+        """, prefix=f"{INSERT_PREFIX}%")
