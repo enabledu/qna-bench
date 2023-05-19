@@ -20,7 +20,7 @@ import typing
 import numpy as np
 import uvloop
 
-import _shared
+import _utils
 
 
 class Result(typing.NamedTuple):
@@ -51,7 +51,7 @@ class LoopingValues:
 
 
 def run_benchmark_method(ctx, benchname, ids, queryname):
-    queries_mod = _shared.IMPLEMENTATIONS[benchname].module
+    queries_mod = _utils.IMPLEMENTATIONS[benchname].module
     if hasattr(queries_mod, 'init'):
         queries_mod.init(ctx)
 
@@ -108,7 +108,7 @@ def run_benchmark_method(ctx, benchname, ids, queryname):
 
 
 async def run_async_benchmark_method(ctx, benchname, ids, queryname):
-    queries_mod = _shared.IMPLEMENTATIONS[benchname].module
+    queries_mod = _utils.IMPLEMENTATIONS[benchname].module
     if hasattr(queries_mod, 'init'):
         queries_mod.init(ctx)
 
@@ -270,7 +270,7 @@ def run_benchmark_async(ctx, benchname, ids, queryname) -> Result:
 
 
 def run_sync(ctx, benchname) -> typing.List[Result]:
-    queries_mod = _shared.IMPLEMENTATIONS[benchname].module
+    queries_mod = _utils.IMPLEMENTATIONS[benchname].module
     results = []
 
     if hasattr(queries_mod, 'init'):
@@ -296,7 +296,7 @@ def run_sync(ctx, benchname) -> typing.List[Result]:
 
 
 def run_async(ctx, benchname) -> typing.List[Result]:
-    queries_mod = _shared.IMPLEMENTATIONS[benchname].module
+    queries_mod = _utils.IMPLEMENTATIONS[benchname].module
     results = []
 
     async def fetch_ids():
@@ -332,7 +332,7 @@ def run_async(ctx, benchname) -> typing.List[Result]:
 
 
 def run_bench(ctx, benchname) -> typing.List[Result]:
-    queries_mod = _shared.IMPLEMENTATIONS[benchname].module
+    queries_mod = _utils.IMPLEMENTATIONS[benchname].module
     if getattr(queries_mod, 'ASYNC', False):
         return run_async(ctx, benchname)
     else:
@@ -352,7 +352,7 @@ def print_result(ctx, result: Result):
 def main():
     multiprocessing.set_start_method('spawn')
 
-    ctx, _ = _shared.parse_args(
+    ctx, _ = _utils.parse_args(
         prog_desc='EdgeDB Databases Benchmark (Python drivers)',
         out_to_json=True)
 
@@ -366,7 +366,7 @@ def main():
 
     data = []
     for benchmark in ctx.benchmarks:
-        bench_desc = _shared.IMPLEMENTATIONS[benchmark]
+        bench_desc = _utils.IMPLEMENTATIONS[benchmark]
         if bench_desc.language != 'python':
             continue
 

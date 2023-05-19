@@ -25,7 +25,7 @@ import distro
 import jinja2
 import numpy as np
 
-import _shared
+import _utils
 
 
 def platform_info():
@@ -170,7 +170,7 @@ def mean_latency_stats(data):
 def process_results(lat_data, results):
     for bench_data in lat_data['data']:
         impl_name = bench_data['benchmark']
-        impl = _shared.IMPLEMENTATIONS[impl_name]
+        impl = _utils.IMPLEMENTATIONS[impl_name]
 
         for query_bench in bench_data['queries']:
             d = calc_latency_stats(
@@ -226,7 +226,7 @@ def format_report_html(data, target_file):
 def run_benchmarks(args, argv):
     lang_args = {}
     for benchname in args.benchmarks:
-        bench = _shared.IMPLEMENTATIONS[benchname]
+        bench = _utils.IMPLEMENTATIONS[benchname]
         if bench.language == 'python':
             lang_args['python'] = [
                 'python', 'bench_python.py', '--json', '__tmp.json'
@@ -273,7 +273,7 @@ def run_benchmarks(args, argv):
 
 
 def main():
-    args, argv = _shared.parse_args(
+    args, argv = _utils.parse_args(
         prog_desc='EdgeDB Databases Benchmark',
         out_to_html=True,
         out_to_json=True)
@@ -330,9 +330,9 @@ def main():
         'platform': plat_info,
         'concurrency': args.concurrency,
         'benchmarks': benchmarks_data,
-        'benchmarks_desc': _shared.BENCHMARKS,
+        'benchmarks_desc': _utils.BENCHMARKS,
         'implementations': [
-            _shared.IMPLEMENTATIONS[benchname].title
+            _utils.IMPLEMENTATIONS[benchname].title
             for benchname in args.benchmarks
         ]
     }
