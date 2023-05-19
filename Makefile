@@ -85,7 +85,7 @@ load-edgedb: docker-edgedb
 
 RUNNER = python bench.py --query get_answer --query get_comments_on_question \
 			--query insert_user --query update_comments_on_answer \
-			--concurrency 1 --duration 10 --net-latency 1
+			--concurrency 5 --duration 10 --net-latency 1
 
 run-edgedb:
-	$(RUNNER) --html docs/edgedb.html --json docs/edgedb.json edgedb_py_sync
+	$(RUNNER) --html docs/edgedb.html --json docs/edgedb.json edgedb_py_sync edgedb_py_async
