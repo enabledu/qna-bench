@@ -1,6 +1,7 @@
 import argparse
 import asyncio
 import json
+import random
 
 import edgedb
 import progress.bar
@@ -65,6 +66,10 @@ async def import_data(data: dict):
     users_bar.goto(users_bar.max)
     users_bar.finish()
 
+    # Get all users id's
+    user_ids = await client.query_json("SELECT User")
+    user_ids = json.loads(user_ids)
+
     # endregion
 
     # region Load comments
@@ -74,7 +79,7 @@ async def import_data(data: dict):
             upvote=c["upvote"],
             downvote=c["downvote"],
             content=c["content"],
-            author=id2username_map[c["author"]],
+            author=user_ids[c["author"]]["id"],
         )
         for c in comments
     ]
@@ -86,7 +91,7 @@ async def import_data(data: dict):
             upvote := <int16>comment["upvote"],
             downvote := <int16>comment["downvote"],
             content := <str>comment["content"],
-            author := (SELECT User FILTER .username = <str>comment["author"] LIMIT 1)
+            author := (SELECT User FILTER .id = <uuid>comment["author"])
         }
     );
     """
@@ -101,9 +106,15 @@ async def import_data(data: dict):
         comments_slice = comments_data[start : start + batch_size]
     comments_bar.goto(comments_bar.max)
     comments_bar.finish()
+
+    # Get all comments id's
+    comment_ids = await client.query_json("SELECT Comment")
+    comment_ids = json.loads(comment_ids)
     # endregion
 
     # region Load answer
+    random.shuffle(user_ids)
+
     answers_data = [
         dict(
             _id=a["id"],
@@ -111,8 +122,8 @@ async def import_data(data: dict):
             downvote=a["downvote"],
             content=a["content"],
             is_accepted=a["is_accepted"],
-            author=id2username_map[a["author"]],
-            comments=[id2comment_map[comment_id] for comment_id in a["comments"]],
+            author=user_ids[a["author"]]["id"],
+            comments=[comment_ids[comment]["id"] for comment in a["comments"]],
         )
         for a in answers
     ]
@@ -124,14 +135,12 @@ async def import_data(data: dict):
             upvote := <int16>answer["upvote"],
             downvote := <int16>answer["downvote"],
             content := <str>answer["content"],
-            author := (SELECT User FILTER .username = <str>answer["author"] LIMIT 1),
+            author := (SELECT User FILTER .id = <uuid>answer["author"]),
             comments := (
-                FOR X IN {
-                    enumerate(array_unpack(<array<str>>answer["comments"]))
-                }
-                UNION (
-                    SELECT Comment
-                    FILTER .content = X.1 LIMIT 1
+                FOR x IN {
+                    enumerate(array_unpack(<array<uuid>>answer["comments"]))
+                } UNION (
+                    SELECT Comment FILTER .id = x.1
                 )
             )
         }
@@ -148,9 +157,16 @@ async def import_data(data: dict):
         answers_slice = answers_data[start : start + batch_size]
     answers_bar.goto(answers_bar.max)
     answers_bar.finish()
+
+    # Get all answers id's
+    answer_ids = await client.query_json("SELECT Answer")
+    answer_ids = json.loads(answer_ids)
     # endregion
 
     # region Load questions
+    random.shuffle(user_ids)
+    random.shuffle(comment_ids)
+
     questions_data = [
         dict(
             _id=q["id"],
@@ -159,9 +175,9 @@ async def import_data(data: dict):
             content=q["content"],
             tags=q["tags"],
             title=q["title"],
-            author=id2username_map[q["author"]],
-            comments=[id2comment_map[comment_id] for comment_id in q["comments"]],
-            answers=[id2answer_map[answer_id] for answer_id in q["answers"]],
+            author=user_ids[q["author"]]["id"],
+            comments=[comment_ids[comment]["id"] for comment in q["comments"]],
+            answers=[answer_ids[answer]["id"] for answer in q["answers"]],
         )
         for q in questions
     ]
@@ -175,23 +191,19 @@ async def import_data(data: dict):
             content := <str>question["content"],
             tags := <array<str>>question["tags"],
             title := <str>question["title"],
-            author := (SELECT User FILTER .username = <str>question["author"] LIMIT 1),
+            author := (SELECT User FILTER .id = <uuid>question["author"]),
             comments := (
-                FOR X IN {
-                    enumerate(array_unpack(<array<str>>question["comments"]))
-                }
-                UNION (
-                    SELECT Comment
-                    FILTER .content = X.1 LIMIT 1
+                FOR x IN {
+                    enumerate(array_unpack(<array<uuid>>question["comments"]))
+                } UNION (
+                    SELECT Comment FILTER .id = x.1
                 )
             ),
             answers := (
-                FOR X IN {
-                    enumerate(array_unpack(<array<str>>question["answers"]))
-                }
-                UNION (
-                    SELECT Answer
-                    FILTER .content = X.1 LIMIT 1
+                FOR x IN {
+                    enumerate(array_unpack(<array<uuid>>question["answers"]))
+                } UNION (
+                    SELECT Answer FILTER .id = x.1
                 )
             )
         }
