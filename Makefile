@@ -82,3 +82,10 @@ load-edgedb: docker-edgedb
 	edgedb query 'DROP DATABASE temp'
 	edgedb migrate
 	$(PP) -m _edgedb.load_data $(DATASET)/edbdataset.json
+
+RUNNER = python bench.py --query get_answer --query get_comments_on_question \
+			--query insert_user --query update_comments_on_answer \
+			--concurrency 1 --duration 10 --net-latency 1
+
+run-edgedb:
+	$(RUNNER) --html docs/edgedb.html --json docs/edgedb.json edgedb_py_sync
