@@ -196,7 +196,7 @@ def cleanup(ctx, conn, queryname):
         """
         )
         conn.commit()
-    elif queryname == "update_comments_in_answer":
+    elif queryname == "update_comments_on_answer":
         cur = conn.cursor()
         cur.execute(
             f"""
