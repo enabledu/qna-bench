@@ -15,6 +15,7 @@ import typing
 from _edgedb import queries_sync as edgedb_queries_sync
 from _edgedb import queries_async as edgedb_queries_async
 from _postgres import queries_sync as postgres_queries_sync
+from _postgres import queries_async as postgres_queries_async
 
 
 class impl(typing.NamedTuple):
@@ -26,7 +27,8 @@ class impl(typing.NamedTuple):
 IMPLEMENTATIONS = {
     "edgedb_py_sync": impl("python", "EdgeDB (Python, Sync)", edgedb_queries_sync),
     "edgedb_py_async": impl("python", "EdgeDB (Python, Async)", edgedb_queries_async),
-    "postgres_py_sync": impl("python", "PostgreSQL (Python)", postgres_queries_sync)
+    "postgres_py_sync": impl("python", "PostgreSQL (Python, Sync)", postgres_queries_sync),
+    "postgres_py_async": impl("python", "PostgreSQL (Python, Async)", postgres_queries_async),
 }
 
 

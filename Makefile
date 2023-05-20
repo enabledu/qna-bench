@@ -144,4 +144,4 @@ run-edgedb:
 	$(RUNNER) --html docs/edgedb.html --json docs/edgedb.json edgedb_py_sync edgedb_py_async
 
 run-postgres:
-	$(RUNNER) --html docs/postgres.html --json docs/postgres.json postgres_py_sync
+	$(RUNNER) --html docs/postgres.html --json docs/postgres.json postgres_py_sync postgres_py_async
