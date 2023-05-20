@@ -9,6 +9,7 @@
 import argparse
 import psycopg2
 import json
+import tqdm
 
 
 def import_data(data):
@@ -28,7 +29,7 @@ def import_data(data):
 
     cursor = conn.cursor()
 
-    for user in users:
+    for user in tqdm.tqdm(users, desc="Users: ", total=len(users)):
         id = user["id"]
         email = user["email"].replace("'", "''")
         hashed_password = user["hashed_password"].replace("'", "''")
@@ -47,7 +48,7 @@ def import_data(data):
 
         cursor.execute(insert_query)
 
-    for question in questions:
+    for question in tqdm.tqdm(questions, desc="Questions: ", total=len(questions)):
         id = question["id"]
         content = question["content"].replace("'", "''")
         title = question["title"].replace("'", "''")
@@ -63,7 +64,7 @@ def import_data(data):
 
         cursor.execute(insert_query)
 
-    for answer in answers:
+    for answer in tqdm.tqdm(answers, desc="Answers: ", total=len(answers)):
         id = answer["id"]
         content = answer["content"].replace("'", "''")
         upvote = answer["upvote"]
@@ -79,7 +80,7 @@ def import_data(data):
 
         cursor.execute(insert_query)
 
-    for comment in comments:
+    for comment in tqdm.tqdm(comments, desc="Comments: ", total=len(comments)):
         id = comment["id"]
         content = comment["content"].replace("'", "''")
         upvote = comment["upvote"]
