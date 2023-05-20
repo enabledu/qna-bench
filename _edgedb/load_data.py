@@ -17,9 +17,6 @@ async def import_data(data: dict):
     answers = data["answers"]
     comments = data["comments"]
 
-    id2username_map = {user["id"]: user["username"] for user in users}
-    id2comment_map = {comment["id"]: comment["content"] for comment in comments}
-    id2answer_map = {answer["id"]: answer["content"] for answer in answers}
 
     # region Load users
     users_data = [
