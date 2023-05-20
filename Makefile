@@ -142,3 +142,6 @@ RUNNER = python bench.py --query get_answer --query get_comments_on_question \
 
 run-edgedb:
 	$(RUNNER) --html docs/edgedb.html --json docs/edgedb.json edgedb_py_sync edgedb_py_async
+
+run-postgres:
+	$(RUNNER) --html docs/postgres.html --json docs/postgres.json postgres_py_sync
