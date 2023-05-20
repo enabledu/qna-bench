@@ -119,6 +119,23 @@ load-edgedb: docker-edgedb
 	edgedb migrate
 	$(PP) -m _edgedb.load_data $(DATASET)/edbdataset.json
 
+load-postgres: docker-postgres-stop reset-postgres
+	$(PSQL_CMD) -U postgres_bench -d postgres_bench \
+			--file=$(CURRENT_DIR)/_postgres/schema.sql
+
+	$(PP) _postgres/load_data.py $(DATASET)/dataset.json
+
+reset-postgres: docker-postgres
+	$(PSQL_CMD) -tc \
+		"DROP DATABASE IF EXISTS postgres_bench;"
+	$(PSQL_CMD) -U postgres -tc \
+		"DROP ROLE IF EXISTS postgres_bench;"
+	$(PSQL_CMD) -U postgres -tc \
+		"CREATE ROLE postgres_bench WITH \
+			LOGIN ENCRYPTED PASSWORD 'edgedbbenchmark';"
+	$(PSQL_CMD) -U postgres -tc \
+		"CREATE DATABASE postgres_bench WITH OWNER = postgres_bench;"
+
 RUNNER = python bench.py --query get_answer --query get_comments_on_question \
 			--query insert_user --query update_comments_on_answer \
 			--concurrency 5 --duration 10 --net-latency 1 --async-split 5
