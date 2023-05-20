@@ -181,7 +181,7 @@ async def cleanup(ctx, conn, queryname):
             WHERE username LIKE '{INSERT_PREFIX}%'
         """
         )
-    elif queryname == "update_comments_in_answer":
+    elif queryname == "update_comments_on_answer":
         await conn.fetch(
             f"""
             DELETE FROM "Comment"
