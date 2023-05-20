@@ -1,0 +1,70 @@
+{
+  "type": "array",
+  "length": {
+    "type": "number",
+    "constant": %QUESTIONS%,
+    "subtype": "u64"
+  },
+  "content": {
+    "type": "object",
+    "author": {
+      "type": "same_as",
+      "ref": "users.content.id"
+    },
+    "content": {
+      "type": "string",
+      "faker": {
+        "generator": "bs"
+      }
+    },
+    "downvote": {
+      "type": "number",
+      "range": {
+        "low": 0,
+        "high": 1000,
+        "step": 1
+      },
+      "subtype": "u64"
+    },
+    "id": {
+      "type": "number",
+      "subtype": "u64",
+      "id": {
+        "start_at": 0
+      }
+    },
+    "tags": {
+      "type": "array",
+      "length": {
+        "type": "number",
+        "range": {
+          "low": 0,
+          "high": 6,
+          "step": 1
+        },
+        "subtype": "u64"
+      },
+      "content": {
+        "type": "string",
+        "faker": {
+          "generator": "bs_noun"
+        }
+      }
+    },
+    "title": {
+      "type": "string",
+      "faker": {
+        "generator": "bs"
+      }
+    },
+    "upvote": {
+      "type": "number",
+      "range": {
+        "low": 0,
+        "high": 1000,
+        "step": 1
+      },
+      "subtype": "u64"
+    }
+  }
+}
