@@ -1,11 +1,3 @@
-#
-# Copyright (c) 2019 MagicStack Inc.
-# All rights reserved.
-#
-# See LICENSE for details.
-##
-
-
 import argparse
 import psycopg2
 import json
@@ -42,8 +34,8 @@ def import_data(data):
         age = user["age"]
 
         insert_query = f"""
-            INSERT INTO "User" (id, email, hashed_password, is_active, is_superuser, is_verified, first_name, last_name, username, age)
-            VALUES ({id}, '{email}', '{hashed_password}', {is_active}, {is_superuser}, {is_verified}, '{first_name}', '{last_name}', '{username}', {age});
+            INSERT INTO "User" (email, hashed_password, is_active, is_superuser, is_verified, first_name, last_name, username, age)
+            VALUES ('{email}', '{hashed_password}', {is_active}, {is_superuser}, {is_verified}, '{first_name}', '{last_name}', '{username}', {age});
             """
 
         cursor.execute(insert_query)
@@ -58,8 +50,8 @@ def import_data(data):
         tags = "'{" + ",".join(question["tags"]) + "}'"
 
         insert_query = f"""
-            INSERT INTO "Question" (id, content, title, upvote, downvote, author_id, tags)
-            VALUES ({id}, '{content}', '{title}', {upvote}, {downvote}, {author_id}, {tags});
+            INSERT INTO "Question" (content, title, upvote, downvote, author_id, tags)
+            VALUES ('{content}', '{title}', {upvote}, {downvote}, {author_id}, {tags});
             """
 
         cursor.execute(insert_query)
@@ -74,8 +66,8 @@ def import_data(data):
         is_accepted = answer["is_accepted"]
 
         insert_query = f"""
-            INSERT INTO "Answer" (id, content, upvote, downvote, author_id, question_id, is_accepted)
-            VALUES ({id}, '{content}', {upvote}, {downvote}, {author_id}, {question_id}, {is_accepted});
+            INSERT INTO "Answer" (content, upvote, downvote, author_id, question_id, is_accepted)
+            VALUES ('{content}', {upvote}, {downvote}, {author_id}, {question_id}, {is_accepted});
             """
 
         cursor.execute(insert_query)
@@ -90,8 +82,8 @@ def import_data(data):
         answer_id = comment["answer"]
 
         insert_query = f"""
-            INSERT INTO "Comment" (id, content, upvote, downvote, author_id, question_id, answer_id)
-            VALUES ({id}, '{content}', {upvote}, {downvote}, {author_id}, {question_id}, {answer_id});
+            INSERT INTO "Comment" (content, upvote, downvote, author_id, question_id, answer_id)
+            VALUES ('{content}', {upvote}, {downvote}, {author_id}, {question_id}, {answer_id});
             """
 
         cursor.execute(insert_query)
