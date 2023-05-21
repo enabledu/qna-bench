@@ -145,7 +145,7 @@ def get_comments_on_question(sess, id):
 
 
 
-def insert_user(conn, val):
+def insert_user(sess, val):
     User = m.User
 
     new_user = User(
@@ -157,8 +157,8 @@ def insert_user(conn, val):
         hashed_password=f"{val}Password"
     )
 
-    conn.add(new_user)
-    conn.commit()
+    sess.add(new_user)
+    sess.commit()
 
     result = json.dumps(
         {
