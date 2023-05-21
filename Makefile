@@ -99,12 +99,12 @@ docker-edgedb: docker-network docker-edgedb-volume
 		query "SELECT 'EdgeDB ready'"
 
 docker-edgedb-stop:
-	-$(DOCKER) stop qna-edgedb docker-postgres-stop
+	-$(DOCKER) stop qna-edgedb
 
-stop-docker: docker-edgedb-stop 
+stop-docker: docker-edgedb-stop docker-postgres-stop
 
-docker-clean: stop-docker docker-network-destroy \
-	docker-edgedb-volume-destroy docker-postgres-volume-destroy
+docker-clean: stop-docker docker-edgedb-volume-destroy docker-postgres-volume-destroy \
+	docker-network-destroy
 
 load-edgedb: docker-edgedb
 	-edgedb project unlink --non-interactive
@@ -119,7 +119,7 @@ load-edgedb: docker-edgedb
 	edgedb migrate
 	$(PP) -m _edgedb.load_data $(DATASET)/edbdataset.json
 
-load-postgres: docker-postgres-stop reset-postgres
+load-postgres: reset-postgres
 	$(PSQL_CMD) -U postgres_bench -d postgres_bench \
 			--file=$(CURRENT_DIR)/_postgres/schema.sql
 
@@ -136,6 +136,22 @@ reset-postgres: docker-postgres
 	$(PSQL_CMD) -U postgres -tc \
 		"CREATE DATABASE postgres_bench WITH OWNER = postgres_bench;"
 
+load-sqlalchemy: docker-postgres
+	$(PSQL_CMD) -tc \
+		"DROP DATABASE IF EXISTS sqlalch_bench;"
+	$(PSQL_CMD) -tc \
+		"DROP ROLE IF EXISTS sqlalch_bench;"
+	$(PSQL_CMD) -tc \
+		"CREATE ROLE sqlalch_bench WITH \
+			LOGIN ENCRYPTED PASSWORD 'edgedbbenchmark';"
+	$(PSQL_CMD) -tc \
+		"CREATE DATABASE sqlalch_bench WITH OWNER = sqlalch_bench;"
+
+	cd _sqlalchemy/ && $(PP) -m alembic upgrade head && cd ../
+	$(PP) _sqlalchemy/load_data.py $(DATASET)/dataset.json
+
+load-all: load-edgedb load-sqlalchemy load-postgres
+
 RUNNER = python bench.py --query get_answer --query get_comments_on_question \
 			--query insert_user --query update_comments_on_answer \
 			--concurrency 5 --duration 10 --net-latency 1 --async-split 5
@@ -145,3 +161,9 @@ run-edgedb:
 
 run-postgres:
 	$(RUNNER) --html docs/postgres.html --json docs/postgres.json postgres_py_sync postgres_py_async
+
+run-sqlalchemy:
+	$(RUNNER) --html docs/sqlalchemy.html --json docs/sqlalchemy.json sqlalchemy_sync sqlalchemy_async
+
+run-all:
+	$(RUNNER) --html docs/bench.html --json docs/bench.json all
