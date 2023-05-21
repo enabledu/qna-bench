@@ -161,4 +161,4 @@ run-postgres:
 	$(RUNNER) --html docs/postgres.html --json docs/postgres.json postgres_py_sync postgres_py_async
 
 run-sqlalchemy:
-	$(RUNNER) --html docs/sqlalchemy.html --json docs/sqlalchemy.json sqlalchemy_sync
+	$(RUNNER) --html docs/sqlalchemy.html --json docs/sqlalchemy.json sqlalchemy_sync sqlalchemy_async

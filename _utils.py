@@ -17,6 +17,7 @@ from _edgedb import queries_async as edgedb_queries_async
 from _postgres import queries_sync as postgres_queries_sync
 from _postgres import queries_async as postgres_queries_async
 from _sqlalchemy import queries_sync as sqlalchemy_queries_sync
+from _sqlalchemy import queries_async as sqlalchemy_queries_async
 
 
 class impl(typing.NamedTuple):
@@ -31,6 +32,7 @@ IMPLEMENTATIONS = {
     "postgres_py_sync": impl("python", "PostgreSQL (Python, Sync)", postgres_queries_sync),
     "postgres_py_async": impl("python", "PostgreSQL (Python, Async)", postgres_queries_async),
     "sqlalchemy_sync": impl("python", "SQLAlchemy (Sync)", sqlalchemy_queries_sync),
+    "sqlalchemy_async": impl("python", "SQLAlchemy (Async)", sqlalchemy_queries_async),
 }
 
 
