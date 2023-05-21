@@ -136,6 +136,20 @@ reset-postgres: docker-postgres
 	$(PSQL_CMD) -U postgres -tc \
 		"CREATE DATABASE postgres_bench WITH OWNER = postgres_bench;"
 
+load-sqlalchemy: docker-postgres
+	$(PSQL_CMD) -tc \
+		"DROP DATABASE IF EXISTS sqlalch_bench;"
+	$(PSQL_CMD) -tc \
+		"DROP ROLE IF EXISTS sqlalch_bench;"
+	$(PSQL_CMD) -tc \
+		"CREATE ROLE sqlalch_bench WITH \
+			LOGIN ENCRYPTED PASSWORD 'edgedbbenchmark';"
+	$(PSQL_CMD) -tc \
+		"CREATE DATABASE sqlalch_bench WITH OWNER = sqlalch_bench;"
+
+	cd _sqlalchemy/ && $(PP) -m alembic upgrade head && cd ../
+	$(PP) _sqlalchemy/load_data.py $(DATASET)/dataset.json
+
 RUNNER = python bench.py --query get_answer --query get_comments_on_question \
 			--query insert_user --query update_comments_on_answer \
 			--concurrency 5 --duration 10 --net-latency 1 --async-split 5
