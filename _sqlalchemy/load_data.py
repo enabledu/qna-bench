@@ -61,7 +61,6 @@ def load_data(filename, engine):
 
     users_data = [
         dict(
-            id=u["id"],
             age=u["age"],
             email=u["email"],
             first_name=u["first_name"],
@@ -77,7 +76,6 @@ def load_data(filename, engine):
 
     questions_data = [
         dict(
-            id=q["id"],
             upvote=q["upvote"],
             downvote=q["downvote"],
             content=q["content"],
@@ -90,7 +88,6 @@ def load_data(filename, engine):
 
     answers_data = [
         dict(
-            id=a["id"],
             upvote=a["upvote"],
             downvote=a["downvote"],
             content=a["content"],
@@ -103,7 +100,6 @@ def load_data(filename, engine):
 
     comments_data = [
         dict(
-            _id=c["id"],
             upvote=c["upvote"],
             downvote=c["downvote"],
             content=c["content"],
@@ -128,10 +124,10 @@ def load_data(filename, engine):
         bulk_insert(db, "comments", comments_data, m.Comment)
 
         # reconcile the autoincrementing indexes with the actual indexes
-        reset_sequence(db, "User")
-        reset_sequence(db, "Question")
-        reset_sequence(db, "Answer")
         reset_sequence(db, "Comment")
+        reset_sequence(db, "Answer")
+        reset_sequence(db, "Question")
+        reset_sequence(db, "User")
 
 
 if __name__ == "__main__":
