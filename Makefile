@@ -154,7 +154,7 @@ load-all: load-edgedb load-sqlalchemy load-postgres
 
 RUNNER = python bench.py --query get_answer --query get_comments_on_question \
 			--query insert_user --query update_comments_on_answer \
-			--concurrency 5 --duration 10 --net-latency 1 --async-split 5
+			--concurrency 2 --duration 10 --net-latency 1 --async-split 1
 
 run-edgedb:
 	$(RUNNER) --html docs/edgedb.html --json docs/edgedb.json edgedb_py_sync edgedb_py_async
