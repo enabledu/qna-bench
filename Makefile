@@ -136,7 +136,7 @@ reset-postgres: docker-postgres
 	$(PSQL_CMD) -U postgres -tc \
 		"CREATE DATABASE postgres_bench WITH OWNER = postgres_bench;"
 
-load-sqlalchemy: docker-postgres
+load-sqlalchemy:
 	$(PSQL_CMD) -tc \
 		"DROP DATABASE IF EXISTS sqlalch_bench;"
 	$(PSQL_CMD) -tc \
@@ -150,20 +150,20 @@ load-sqlalchemy: docker-postgres
 	cd _sqlalchemy/ && $(PP) -m alembic upgrade head && cd ../
 	$(PP) _sqlalchemy/load_data.py $(DATASET)/dataset.json
 
-load-all: load-edgedb load-sqlalchemy load-postgres
+load-all: load-edgedb load-postgres load-sqlalchemy
 
 RUNNER = python bench.py --query get_answer --query get_comments_on_question \
 			--query insert_user --query update_comments_on_answer \
 			--concurrency 2 --duration 10 --net-latency 1 --async-split 1
 
 run-edgedb:
-	$(RUNNER) --html docs/edgedb.html --json docs/edgedb.json edgedb_py_sync edgedb_py_async
+	$(RUNNER) --html docs/edgedb.html --json docs/edgedb.json edgedb_py_async
 
 run-postgres:
-	$(RUNNER) --html docs/postgres.html --json docs/postgres.json postgres_py_sync postgres_py_async
+	$(RUNNER) --html docs/postgres.html --json docs/postgres.json postgres_py_async
 
 run-sqlalchemy:
-	$(RUNNER) --html docs/sqlalchemy.html --json docs/sqlalchemy.json sqlalchemy_sync sqlalchemy_async
+	$(RUNNER) --html docs/sqlalchemy.html --json docs/sqlalchemy.json sqlalchemy_async
 
 run-all:
 	$(RUNNER) --html docs/bench.html --json docs/bench.json all
