@@ -24,6 +24,8 @@ CREATE TABLE "Question"
     tags        VARCHAR(255)[],
     is_accepted BOOLEAN  DEFAULT false NOT NULL
 );
+CREATE INDEX idx_question_author_id ON "Question" (author_id);
+
 
 CREATE TABLE "Answer"
 (
@@ -35,6 +37,8 @@ CREATE TABLE "Answer"
     question_id INTEGER                NOT NULL REFERENCES "Question" (id),
     is_accepted BOOLEAN  DEFAULT false NOT NULL
 );
+CREATE INDEX idx_answer_author_id ON "Answer" (author_id);
+CREATE INDEX idx_answer_question_id ON "Answer" (question_id);
 
 CREATE TABLE "Comment"
 (
@@ -46,3 +50,6 @@ CREATE TABLE "Comment"
     question_id INTEGER REFERENCES "Question" (id),
     answer_id   INTEGER REFERENCES "Answer" (id)
 );
+CREATE INDEX idx_comment_author_id ON "Comment" (author_id);
+CREATE INDEX idx_comment_question_id ON "Comment" (question_id);
+CREATE INDEX idx_comment_answer_id ON "Comment" (answer_id);
